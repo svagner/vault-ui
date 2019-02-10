@@ -22,6 +22,8 @@ import UserPassAuthBackend from './components/Authentication/UserPass/UserPass.j
 import SecretUnwrapper from './components/shared/Wrapping/Unwrapper';
 import OktaAuthBackend from './components/Authentication/Okta/Okta.jsx';
 import AppRoleAuthBackend from './components/Authentication/AppRole/AppRole.jsx'
+import ChefAuthBackend from './components/Authentication/Chef/Chef.jsx'
+import LdapAuthBackend from './components/Authentication/Ldap/Ldap.jsx'
 
 // Load here to signal webpack
 import 'flexboxgrid/dist/flexboxgrid.min.css';
@@ -90,6 +92,8 @@ ReactDOM.render((
                 <Route path="/auth/okta/:namespace(/**)" component={OktaAuthBackend} />
                 <Route path="/auth/userpass/:namespace(/**)" component={UserPassAuthBackend} />
                 <Route path="/auth/approle/:namespace(/**)" component={AppRoleAuthBackend} />
+                <Route path="/auth/chef/:namespace(/**)" component={ChefAuthBackend} />
+                <Route path="/auth/ldap/:namespace(/**)" component={LdapAuthBackend} />
                 <Route path="/settings" component={Settings} />
                 <Route path="/responsewrapper" component={ResponseWrapper} />
                 <Route path="/sys/policies(/**)" component={PolicyManager} />

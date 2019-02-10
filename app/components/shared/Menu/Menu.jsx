@@ -18,8 +18,13 @@ const supported_secret_backend_types = [
     'kv'
 ]
 
+const supported_auth_plugins = [
+  'chef/'
+]
+
 const supported_auth_backend_types = [
     'token',
+    'ldap',
     'github',
     'radius',
     'aws-ec2',
@@ -108,7 +113,7 @@ class Menu extends React.Component {
                 return callVaultApi('get', 'sys/auth').then((resp) => {
                     let entries = _.get(resp, 'data.data', _.get(resp, 'data', {}));
                     let discoveredAuthBackends = _.map(entries, (v, k) => {
-                        if (_.indexOf(supported_auth_backend_types, v.type) != -1) {
+                        if (_.indexOf(supported_auth_backend_types, v.type) != -1 || (v.type === 'plugin' && _.indexOf(supported_auth_plugins, k) != -1)) {
                             let entry = {
                                 path: k,
                                 type: v.type,
@@ -158,18 +163,24 @@ class Menu extends React.Component {
 
         let renderAuthBackendList = () => {
             return _.map(this.state.authBackends, (backend, idx) => {
-                let tuneObj = {
-                    path: `sys/auth/${backend.path}`,
-                    uipath: `/auth/${backend.type}/${backend.path}`,
-                    config: backend.config
-                }
+              let path='';
+              if (backend.type === 'plugin') {
+                path=`/auth/${backend.path}${backend.path}`
+              } else {
+                path=`/auth/${backend.type}/${backend.path}`
+              }
+              let tuneObj = {
+                  path: `sys/auth/${backend.path}`,
+                  uipath: `/auth/${backend.type}/${backend.path}`,
+                  config: backend.config
+              }
 
                 return (
                     <ListItem
                         key={idx}
                         primaryText={backend.path}
                         secondaryText={`type: ${backend.type}`}
-                        value={`/auth/${backend.type}/${backend.path}`}
+                        value={`${path}`}
                         rightIconButton={
                             <IconButton
                                 style={{ opacity: 0.1 }}
